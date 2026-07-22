@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PBC Resource Guide — Social Services Referral Map</title>
+<meta name="description" content="Palm Beach County community resource map for the Public Defender's Office Social Services Division.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🗺️</text></svg>">
+
+<!-- Leaflet (map library) -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<!-- Leaflet.markercluster (keeps overlapping pins from overwhelming the map) -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+
+<!-- Web font: closest accessible open alternative to Footlight MT Light. See styles.css note. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ===== Top bar ===== -->
+  <header id="topbar">
+    <div id="topbar-brand">
+      <button id="sidebarToggleBtn" class="icon-btn" title="Toggle sidebar width" aria-label="Toggle sidebar width">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="2"/><line x1="9" y1="4" x2="9" y2="20" stroke="currentColor" stroke-width="2"/></svg>
+      </button>
+      <div id="brand-text">
+        <h1>PBC Resource Guide</h1>
+        <p>Social Services Division — Referral Reference Map</p>
+      </div>
+    </div>
+
+    <div id="topbar-search">
+      <div class="search-field">
+        <span class="search-icon" aria-hidden="true">📍</span>
+        <input type="text" id="addressSearchInput" placeholder="Search near an address (e.g. 205 N Dixie Hwy, West Palm Beach)" aria-label="Search near an address">
+        <button id="addressSearchBtn" class="btn btn-primary btn-sm">Find Nearby</button>
+      </div>
+      <div id="addressSearchStatus" class="search-status" aria-live="polite"></div>
+    </div>
+
+    <div id="topbar-actions">
+      <button id="resetViewBtn" class="btn btn-ghost btn-sm">Reset Map</button>
+    </div>
+  </header>
+
+  <!-- ===== Main layout ===== -->
+  <div id="layout">
+
+    <!-- ===== Sidebar ===== -->
+    <aside id="sidebar" data-width="wide">
+
+      <nav id="viewTabs" aria-label="Resource view tabs">
+        <button class="view-tab active" data-view="all">All Resources</button>
+        <button class="view-tab" data-view="virtual">🌐 Virtual / Contact for Address</button>
+        <button class="view-tab" data-view="so">🔒 SO-Specific Services</button>
+      </nav>
+
+      <div id="quickFilter">
+        <input type="text" id="resourceSearchInput" placeholder="Filter by name or keyword…" aria-label="Filter resources by name or keyword">
+      </div>
+
+      <div id="categoryChips" aria-label="Filter by category"></div>
+
+      <div id="resultsMeta"><span id="resultsCount">0</span> resources shown</div>
+
+      <div id="resourceList" aria-label="Resource list"></div>
+
+    </aside>
+
+    <!-- ===== Map ===== -->
+    <main id="mapWrap">
+      <div id="map"></div>
+
+      <div id="emergencyBanner" class="hidden">
+        <span>🆘 Showing 24/7 shelters, crisis hotlines &amp; walk-in services only</span>
+        <button id="exitEmergencyBtn" class="btn btn-sm btn-ghost-onmap">Exit Emergency View</button>
+      </div>
+
+      <button id="emergencyFab" title="I need help right now">
+        <span class="emergency-fab-icon">🆘</span>
+        <span class="emergency-fab-label">I need help<br>right now</span>
+      </button>
+
+      <div id="mapLegend">
+        <div class="legend-title">Map Key</div>
+        <div id="legendItems"></div>
+      </div>
+    </main>
+
+  </div>
+</div>
+
+<!-- ===== Resource detail modal (used by both map popup "more info" and card click) ===== -->
+<div id="detailOverlay" class="hidden">
+  <div id="detailModal" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+    <button id="detailCloseBtn" class="icon-btn" aria-label="Close">✕</button>
+    <div id="detailContent"></div>
+  </div>
+</div>
+
+<script src="resources_data.js"></script>
+<script src="hours-and-categories.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
