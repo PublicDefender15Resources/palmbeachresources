@@ -373,6 +373,27 @@ function openResource(id) {
 }
 
 /* ---------------- Shared content builder (popup + modal) ---------------- */
+function linkifyContact(raw) {
+  if (!raw) return '';
+  let html = escapeHtml(raw);
+  // Emails
+  html = html.replace(/([\w.+-]+@[\w-]+\.[\w.-]+)/g, '<a href="mailto:$1">$1</a>');
+  // US-style phone numbers (skips ones already inside an href we just built)
+  html = html.replace(/(\(?\d{3}\)?\s*[.-]?\s*\d{3}\s*[.-]?\s*\d{4})/g, (match, _p1, offset, full) => {
+    const before = full.slice(Math.max(0, offset - 6), offset);
+    if (before.includes('mailto:') || before.includes('href="')) return match; // don't relink inside an existing tag
+    const digits = match.replace(/[^\d]/g, '');
+    return `<a href="tel:${digits}">${match}</a>`;
+  });
+  return html;
+}
+
+function buildContactHTML(r) {
+  const source = r.contactRaw || r.phone;
+  if (!source) return '';
+  return `<div class="detail-section"><h3>Contact</h3><p class="contact-block">${linkifyContact(source)}</p></div>`;
+}
+
 function buildRequirementsHTML(r) {
   let html = '';
   if (r.eligibility) html += `<div class="detail-section"><h3>Client Eligibility</h3><p>${escapeHtml(r.eligibility)}</p></div>`;
@@ -440,6 +461,7 @@ function buildPopupHTML(r) {
     <div class="popup-title">${catIcon(r.primaryCategory)} ${escapeHtml(r.name)}</div>
     ${buildFlagsHTML(r)}
     <div class="popup-desc">${escapeHtml(r.description)}</div>
+    ${buildContactHTML(r)}
     ${buildRequirementsHTML(r)}
     ${buildReferralHTML(r)}
     ${buildHoursHTML(r)}
@@ -467,7 +489,7 @@ function openDetailModal(r) {
     <div class="detail-section"><p>${escapeHtml(r.description)}</p></div>
     <div class="detail-section"><h3>Services</h3><div class="detail-tags">${r.services.map(s => `<span class="detail-tag">${catIcon(s)} ${(CATS[s] || CATS.Other).label}</span>`).join('')}</div></div>
     ${r.address ? `<div class="detail-section"><h3>Address on File</h3><p>${escapeHtml(r.address)}</p></div>` : ''}
-    ${r.phone ? `<div class="detail-section"><h3>Contact</h3><p>${escapeHtml(r.contactRaw)}</p></div>` : ''}
+    ${buildContactHTML(r)}
     ${buildRequirementsHTML(r)}
     ${buildReferralHTML(r)}
     ${buildHoursHTML(r)}

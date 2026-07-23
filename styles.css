@@ -544,6 +544,9 @@ a { color: var(--teal-700); }
   font-weight: 800;
 }
 .detail-section p { margin: 0; font-size: 15px; color: var(--ink); }
+.contact-block { line-height: 1.65; }
+.contact-block a { font-weight: 800; text-decoration: none; border-bottom: 1.5px solid var(--teal-100); }
+.contact-block a:hover { border-bottom-color: var(--teal-500); }
 .detail-tags { display: flex; flex-wrap: wrap; gap: 6px; }
 .detail-tag {
   background: var(--surface-2);
