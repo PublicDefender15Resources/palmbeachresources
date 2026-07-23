@@ -151,6 +151,8 @@ function bindGlobalEvents() {
       if (state.emergencyMode) exitEmergencyMode();
       state.view = tab.dataset.view;
       document.querySelectorAll('.view-tab').forEach(t => t.classList.toggle('active', t === tab));
+      document.getElementById('categoryChips').classList.remove('chips-collapsed');
+      document.getElementById('resourceList').scrollTop = 0;
       applyFiltersAndRender();
     });
   });
@@ -168,6 +170,14 @@ function bindGlobalEvents() {
   });
   document.getElementById('exitEmergencyBtn').addEventListener('click', exitEmergencyMode);
 
+  document.getElementById('resourceList').addEventListener('scroll', handleResourceListScroll);
+
+  document.getElementById('legendToggleBtn').addEventListener('click', () => {
+    const legend = document.getElementById('mapLegend');
+    const expanded = legend.classList.toggle('legend-expanded');
+    document.getElementById('legendToggleBtn').setAttribute('aria-expanded', expanded);
+  });
+
   document.getElementById('addressSearchBtn').addEventListener('click', doAddressSearch);
   document.getElementById('addressSearchInput').addEventListener('keydown', (e) => {
     if (e.key === 'Enter') doAddressSearch();
@@ -182,6 +192,17 @@ function bindGlobalEvents() {
   });
 }
 
+function handleResourceListScroll(e) {
+  const chips = document.getElementById('categoryChips');
+  const scrollTop = e.target.scrollTop;
+  // Hysteresis (collapse past 32px, re-expand only once back under 8px) avoids flicker
+  if (scrollTop > 32) {
+    chips.classList.add('chips-collapsed');
+  } else if (scrollTop < 8) {
+    chips.classList.remove('chips-collapsed');
+  }
+}
+
 function resetEverything() {
   state.view = 'all';
   state.activeCategories.clear();
@@ -193,6 +214,8 @@ function resetEverything() {
   document.getElementById('addressSearchStatus').textContent = '';
   document.querySelectorAll('.view-tab').forEach(t => t.classList.toggle('active', t.dataset.view === 'all'));
   syncChipUI();
+  document.getElementById('categoryChips').classList.remove('chips-collapsed');
+  document.getElementById('resourceList').scrollTop = 0;
   if (mapAvailable) {
     if (userLocationMarker) { map.removeLayer(userLocationMarker); userLocationMarker = null; }
     map.setView(PBC_CENTER, PBC_DEFAULT_ZOOM);

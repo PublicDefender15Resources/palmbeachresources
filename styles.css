@@ -275,6 +275,16 @@ a { color: var(--teal-700); }
   gap: 6px;
   padding: 12px;
   flex-shrink: 0;
+  max-height: 220px;
+  opacity: 1;
+  overflow: hidden;
+  transition: max-height .22s ease, opacity .16s ease, padding .22s ease;
+}
+#categoryChips.chips-collapsed {
+  max-height: 0;
+  opacity: 0;
+  padding-top: 0;
+  padding-bottom: 0;
 }
 .chip {
   border: 1.5px solid var(--line-strong);
@@ -445,13 +455,48 @@ a { color: var(--teal-700); }
   background: rgba(255,255,255,0.95);
   border: 1px solid var(--line);
   border-radius: var(--radius-md);
-  padding: 10px 12px;
   box-shadow: var(--shadow-sm);
   font-size: 12px;
   max-width: 190px;
+  overflow: hidden;
 }
-.legend-title { font-weight: 800; margin-bottom: 6px; color: var(--teal-700); text-transform: uppercase; letter-spacing: .04em; font-size: 11px;}
-#legendItems { display: flex; flex-direction: column; gap: 3px; }
+#legendToggleBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  background: transparent;
+  border: none;
+  padding: 9px 12px;
+  font-family: var(--font-body);
+  font-weight: 800;
+  color: var(--teal-700);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  font-size: 11px;
+}
+#legendToggleBtn:hover { background: var(--surface-2); }
+.legend-toggle-icon { font-size: 14px; }
+.legend-toggle-label { flex: 1; text-align: left; }
+.legend-chevron { transition: transform .18s ease; color: var(--ink-faint); font-size: 10px; }
+#mapLegend.legend-expanded .legend-chevron { transform: rotate(90deg); }
+
+#legendItems {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  padding: 0 12px;
+  transition: max-height .22s ease, opacity .18s ease, padding .22s ease;
+}
+#mapLegend.legend-expanded #legendItems {
+  max-height: 280px;
+  opacity: 1;
+  padding: 0 12px 10px;
+  overflow-y: auto;
+}
 .legend-row { display: flex; align-items: center; gap: 6px; color: var(--ink-soft); font-weight: 600;}
 .legend-dot { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; }
 
