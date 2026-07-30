@@ -4458,7 +4458,7 @@ const PBC_RESOURCES = [
   "lng": -82.655058,
   "hasCoords": true,
   "noAddressReason": null,
-  "isSO": true,
+  "isSO": false,
   "isEmergency": false
  },
  {
